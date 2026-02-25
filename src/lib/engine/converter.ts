@@ -27,11 +27,11 @@ export function decodeSession(session: string, format: SessionFormat): SessionDa
 }
 
 /** Encode session data to a target format */
-export function encodeSession(
+export async function encodeSession(
   session: SessionData,
   format: SessionFormat,
   options?: { apiId?: number }
-): string {
+): Promise<string> {
   // Ensure IP address is filled from DC table
   const filled = fillIpFromDc(session);
 
@@ -52,12 +52,12 @@ export function encodeSession(
 }
 
 /** Convert a session string from one format to another */
-export function convertSession(
+export async function convertSession(
   session: string,
   sourceFormat: SessionFormat,
   targetFormat: SessionFormat,
   options?: { apiId?: number }
-): string {
+): Promise<string> {
   const data = decodeSession(session, sourceFormat);
   return encodeSession(data, targetFormat, options);
 }
@@ -134,9 +134,18 @@ export function detectFormat(session: string): DetectionResult | null {
   return null;
 }
 
-/** Fill in IP address from DC table if missing */
+/** Check if a string looks like a valid IP address (v4 or v6) */
+function isValidIP(addr: string): boolean {
+  // IPv4: digits and dots only, 4 octets
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(addr)) return true;
+  // IPv6: hex and colons
+  if (/^[0-9a-fA-F:]+$/.test(addr) && addr.includes(':')) return true;
+  return false;
+}
+
+/** Fill in IP address from DC table if missing or if it's a hostname (not an IP) */
 function fillIpFromDc(session: SessionData): SessionData {
-  if (session.ipAddress && session.ipAddress !== '') {
+  if (session.ipAddress && session.ipAddress !== '' && isValidIP(session.ipAddress)) {
     return session;
   }
   const dcTable = session.testMode ? DC_TEST : DC_PROD;
