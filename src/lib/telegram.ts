@@ -11,7 +11,7 @@ export async function createUserSession(
   apiId: number,
   apiHash: string,
   phoneNumber: string,
-  callbacks: AuthCallbacks
+  callbacks: AuthCallbacks,
 ): Promise<{ client: TelegramClient; sessionString: string }> {
   const session = new StringSession('');
   const client = new TelegramClient(session, apiId, apiHash, {
@@ -33,7 +33,7 @@ export async function createBotSession(
   apiId: number,
   apiHash: string,
   botToken: string,
-  onError: (error: Error) => void
+  onError: (error: Error) => void,
 ): Promise<{ client: TelegramClient; sessionString: string }> {
   const session = new StringSession('');
   const client = new TelegramClient(session, apiId, apiHash, {

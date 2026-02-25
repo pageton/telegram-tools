@@ -11,14 +11,25 @@
   import type { TelegramClient } from 'telegram';
   import { createUserSession, createBotSession, getMe } from './telegram';
 
+  // LocalStorage keys
+  const LS_API_ID = 'tg_api_id';
+  const LS_API_HASH = 'tg_api_hash';
   // State
   let step = $state<number>(1);
   let accountType = $state<'user' | 'bot'>('user');
-  
-  // Credentials
-  let apiIdStr = $state<string>('');
-  let apiHash = $state<string>('');
-  
+
+  // Credentials (restored from localStorage)
+  let apiIdStr = $state<string>(localStorage.getItem(LS_API_ID) ?? '');
+  let apiHash = $state<string>(localStorage.getItem(LS_API_HASH) ?? '');
+
+  // Save credentials to localStorage when they change
+  $effect(() => {
+    localStorage.setItem(LS_API_ID, apiIdStr);
+  });
+  $effect(() => {
+    localStorage.setItem(LS_API_HASH, apiHash);
+  });
+
   // Login
   let phoneNumber = $state<string>('');
   let botToken = $state<string>('');
@@ -130,7 +141,7 @@
 
       const results = {} as Record<SessionFormat, string>;
       for (const fmt of formats) {
-        results[fmt] = encodeSession(sessionData, fmt, { apiId });
+        results[fmt] = await encodeSession(sessionData, fmt, { apiId });
       }
       
       allGenerated = results;
@@ -273,6 +284,7 @@
               </div>
             </div>
 
+
             <div class="flex flex-col gap-2">
               <label for="gen-api-id" class="text-sm font-medium text-surface-300">API ID</label>
               <input
@@ -323,6 +335,7 @@
               <h2 class="text-xl font-bold text-surface-50">Phone Number</h2>
               <p class="text-surface-500 text-xs">Include country code</p>
             </div>
+
 
             <div class="relative flex items-center bg-surface-950 border border-surface-800 rounded-xl focus-within:ring-2 focus-within:ring-primary-500/50 transition-all">
               <span class="pl-4 pr-1 text-surface-500 text-lg font-mono select-none">+</span>
