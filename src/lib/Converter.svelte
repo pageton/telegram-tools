@@ -42,7 +42,7 @@
     }
   });
 
-  function handleConvert() {
+  async function handleConvert() {
     allGenerated = null;
     if (!sourceFormat || !decodedData) {
       addToast('Cannot convert: invalid or unknown source session.', 'error');
@@ -51,14 +51,14 @@
 
     try {
       const apiId = apiIdStr ? parseInt(apiIdStr, 10) : decodedData.apiId;
-      generatedSession = encodeSession(decodedData, targetFormat, { apiId: isNaN(apiId!) ? undefined : apiId });
+      generatedSession = await encodeSession(decodedData, targetFormat, { apiId: isNaN(apiId!) ? undefined : apiId });
       addToast(`Converted to ${labelOf(targetFormat)} successfully.`, 'success');
     } catch (err: any) {
       addToast(`Conversion failed: ${err.message}`, 'error');
     }
   }
 
-  function handleConvertAll() {
+  async function handleConvertAll() {
     generatedSession = null;
     if (!sourceFormat || !decodedData) {
       addToast('Cannot convert: invalid or unknown source session.', 'error');
@@ -70,7 +70,7 @@
       const opts = { apiId: isNaN(apiId!) ? undefined : apiId };
       const results = {} as Record<SessionFormat, string>;
       for (const fmt of formats) {
-        results[fmt] = encodeSession(decodedData, fmt, opts);
+        results[fmt] = await encodeSession(decodedData, fmt, opts);
       }
       allGenerated = results;
       addToast('Converted to all formats.', 'success');
