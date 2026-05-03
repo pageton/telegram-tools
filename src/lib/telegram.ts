@@ -16,6 +16,8 @@ export async function createUserSession(
 	const session = new StringSession("");
 	const client = new TelegramClient(session, apiId, apiHash, {
 		connectionRetries: 5,
+		deviceModel: "Web Browser",
+		systemVersion: "1.0",
 	});
 
 	await client.start({
@@ -38,6 +40,8 @@ export async function createBotSession(
 	const session = new StringSession("");
 	const client = new TelegramClient(session, apiId, apiHash, {
 		connectionRetries: 5,
+		deviceModel: "Web Browser",
+		systemVersion: "1.0",
 	});
 
 	await client.start({
