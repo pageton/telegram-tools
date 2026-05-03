@@ -434,12 +434,12 @@
         </button>
       {:else}
         <div class="flex flex-col gap-3" in:slide>
-          <label for="gen-2fa-pass" class="text-xs font-medium text-surface-400 uppercase tracking-wider">Cloud Password</label>
+          <label for="gen-2fa-pass" class="text-xs font-medium text-surface-400 uppercase tracking-wider">2FA Password</label>
           <input
             id="gen-2fa-pass"
             type="password"
             bind:value={passwordInput}
-            placeholder="Enter your cloud password"
+            placeholder="Enter your 2FA password"
             class="w-full bg-surface-900 border border-surface-800 text-surface-200 text-base p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500/40 transition-colors"
             onkeydown={(e) => e.key === 'Enter' && submitPassword()}
           />
